@@ -7,32 +7,32 @@ export class Legend extends Component {
       <div>
         <div className="main-legend">
           <div>
-            Croustillant non. tramways verticaux : :
-            <span className="main-crips"></span>
+            Nombre des voiture verticaux :<span className="main-crips"></span>
           </div>
           <div>
-            Non flou. tramways verticaux : <span className="main-fuzzy"></span>
+            Proportion des voitures verticaux :
+            <span className="main-fuzzy"></span>
           </div>
           <div>
-            Croustillant non. tramways horizontaux :
+            Nombre des voitures horizontaux :
             <span className="secondary-crisp"></span>
           </div>
           <div>
-            Non flou. tramways horizontaux:
+            Proportion des voitures horizontaux:
             <span className="secondary-fuzzy"></span>
           </div>
           <div>
-            Brouillard croustillant : <span className="fog-crisp"></span>
+            Nombre total : <span className="fog-crisp"></span>
           </div>
           <div>
-            Brouillard flou : <span className="fog-fuzzy"></span>
+            Proportion totale : <span className="fog-fuzzy"></span>
           </div>
           <div>
-            Durée de la lumière verte nette :{" "}
-            <span className="output-crisp"></span>
+            Durée du feu verte : <span className="output-crisp"></span>
           </div>
           <div>
-            Durée floue du feu vert : <span className="output-fuzzy"></span>
+            Durée du feu vert (proportion) :{" "}
+            <span className="output-fuzzy"></span>
           </div>
           <div>
             Feu vert pour : <span className="green-light-for"></span>

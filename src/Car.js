@@ -537,7 +537,7 @@ export class Car extends Component {
       ];
       const movementDirection = availableDirections[getRandomInt(0, 4)];
 
-      // Si la limite de 10 voitures par section (haut/bas/gauche/droite) a été dépassée, retourne null
+      // Si la limite de 5 voitures par section (haut/bas/gauche/droite) a été dépassée, retourne null
       // Sinon, les voitures se chevaucheraient
       if (
         (movementDirection === mouvementDirections.down &&
