@@ -148,6 +148,7 @@ export class Car extends Component {
     const nouedBrouiFlou = document.querySelector(".fog-fuzzy");
     const nouedSortiCrisp = document.querySelector(".output-crisp");
     const noeudSortiFlou = document.querySelector(".output-fuzzy");
+    const TempsdeSimulation = document.querySelector(".time-simulation");
     const feuVertNoeud = document.querySelector(".green-light-for");
 
     // La position où les voitures doivent s'arrêter à chaque feu
@@ -368,20 +369,20 @@ export class Car extends Component {
     }
 
     // Générer des paramètres aléatoires pour une voiture (esthétique)
-    function buildRandomCarSpecs() {
+    function buildRandomCarSpecs(colorIndex) {
       const width = "20px";
       const height = getRandomInt(20, 30) + "px";
-      const borderRadius = getRandomInt(10, 40) + "%";
+      const borderRadius = "0%";
       const colors = ["#133457", "#CC2B1F", "#000000", "#67389A"];
-      const carColor = colors[getRandomInt(0, 3)];
+      const carColor = colors[colorIndex];
 
       return { width, height, borderRadius, carColor };
     }
 
     // Construire un nœud dans le DOM pour une voiture en utilisant des paramètres aléatoires
-    function buildRandomCarNode() {
+    function buildRandomCarNode(colorIndex) {
       let carNode = document.createElement("div");
-      let carSpecs = buildRandomCarSpecs();
+      let carSpecs = buildRandomCarSpecs(colorIndex);
 
       carNode.classList.add("car");
 
@@ -522,12 +523,6 @@ export class Car extends Component {
       return carHasToStop;
     }
 
-    /**
-     * Créer un nœud de voiture prêt à être inséré dans la page
-     *
-     * @returns {null|HTMLDivElement} Renvoie null si le nombre maximum de voitures sur une section ou un nœud de voiture a été atteint
-     *
-     */
     function spawnRandomCar() {
       const availableDirections = [
         mouvementDirections.down,
@@ -555,29 +550,52 @@ export class Car extends Component {
       const carId = Math.random();
 
       // Définir les métadonnées sur chaque objet voitures globalement requis pour la logique
-      let carNode = buildRandomCarNode();
-      carNode.metaData.movementDirection = movementDirection;
-      carNode.metaData.id = carId;
-      carNode.metaData.isWaiting = true;
-      carNodes[carId] = carNode;
+      //let carNode = buildRandomCarNode();
+      let carNode = null;
+      //carNode.metaData.movementDirection = movementDirection;
+      //carNode.metaData.id = carId;
+      //carNode.metaData.isWaiting = true;
+      //carNodes[carId] = carNode;
 
       // Ajuste l'affichage des voitures et incrémente le nombre de voitures en attente
       // Théoriquement, ils attendent dans l'état initial jusqu'à ce qu'ils atteignent le feu tricolore
       if (movementDirection === mouvementDirections.left) {
+        carNode = buildRandomCarNode(3);
+        carNode.metaData.movementDirection = movementDirection;
+        carNode.metaData.id = carId;
+        carNode.metaData.isWaiting = true;
+        carNodes[carId] = carNode;
+
         carNode.classList.add("car-horizontal");
         carNode.style.marginTop = positionsApparitionVoitures.right.top;
         carNode.style.marginLeft = positionsApparitionVoitures.right.left;
         carsWaiting.right++;
       } else if (movementDirection === mouvementDirections.right) {
+        carNode = buildRandomCarNode(2);
+        carNode.metaData.movementDirection = movementDirection;
+        carNode.metaData.id = carId;
+        carNode.metaData.isWaiting = true;
+        carNodes[carId] = carNode;
+
         carNode.classList.add("car-horizontal");
         carNode.style.marginTop = positionsApparitionVoitures.left.top;
         carNode.style.marginLeft = positionsApparitionVoitures.left.left;
         carsWaiting.left++;
       } else if (movementDirection === mouvementDirections.down) {
+        carNode = buildRandomCarNode(1);
+        carNode.metaData.movementDirection = movementDirection;
+        carNode.metaData.id = carId;
+        carNode.metaData.isWaiting = true;
+        carNodes[carId] = carNode;
         carNode.style.marginTop = positionsApparitionVoitures.top.top;
         carNode.style.marginLeft = positionsApparitionVoitures.top.left;
         carsWaiting.top++;
       } else {
+        carNode = buildRandomCarNode(0);
+        carNode.metaData.movementDirection = movementDirection;
+        carNode.metaData.id = carId;
+        carNode.metaData.isWaiting = true;
+        carNodes[carId] = carNode;
         carNode.style.marginTop = positionsApparitionVoitures.bottom.top;
         carNode.style.marginLeft = positionsApparitionVoitures.bottom.left;
         carsWaiting.down++;
@@ -707,7 +725,7 @@ export class Car extends Component {
     // Fonction qui ajoute une voiture aléatoire à la page
     function appendRandomCarToDom(delay) {
       setTimeout(() => {
-        appendRandomCarToDom(getRandomInt(200, 700));
+        appendRandomCarToDom(getRandomInt(500, 700));
 
         let carNode = spawnRandomCar();
 
@@ -788,9 +806,31 @@ export class Car extends Component {
 
     // Démarrer les feux de circulation
     alternateTrafficLights(500);
+    var seconds = 0;
+
+    var timer = setInterval(upTimer, 1000);
+
+    function upTimer() {
+      ++seconds;
+
+      var hour = Math.floor(seconds / 3600);
+
+      var minute = Math.floor((seconds - hour * 3600) / 60);
+
+      var updSecond = seconds - (hour * 3600 + minute * 60);
+
+      TempsdeSimulation.innerHTML = hour + ":" + minute + ":" + updSecond;
+    }
   }
+
   componentDidUpdate() {
     console.log(this.state.feuVertNoeud);
+  }
+
+  componentWillUnmount() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
   }
 
   render() {

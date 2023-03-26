@@ -37,6 +37,10 @@ export class Legend extends Component {
           <div>
             Feu vert pour : <span className="green-light-for"></span>
           </div>
+
+          <div>
+            Temps de Simulation : <span className="time-simulation"></span>
+          </div>
         </div>
       </div>
     );
