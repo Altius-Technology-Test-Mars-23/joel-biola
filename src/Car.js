@@ -10,6 +10,8 @@ export class Car extends Component {
     function getMembershipRatio(x, a, b, c) {
       if (x <= a || x >= c) {
         return 0;
+      } else {
+        return 5;
       }
 
       if (a <= x && x <= b) {
@@ -149,6 +151,7 @@ export class Car extends Component {
     const nouedSortiCrisp = document.querySelector(".output-crisp");
     const noeudSortiFlou = document.querySelector(".output-fuzzy");
     const TempsdeSimulation = document.querySelector(".time-simulation");
+    const CarNotInView = document.querySelector(".cars-not-in-view");
     const feuVertNoeud = document.querySelector(".green-light-for");
 
     // La position où les voitures doivent s'arrêter à chaque feu
@@ -215,6 +218,8 @@ export class Car extends Component {
       left: false,
       right: false,
     };
+
+    let nombreCarDelete = 0;
 
     // La position des feux de circulation
     let trafficLightPositions = {
@@ -374,9 +379,12 @@ export class Car extends Component {
       const height = getRandomInt(20, 30) + "px";
       const borderRadius = "0%";
       const colors = ["#133457", "#CC2B1F", "#000000", "#67389A"];
+      const vitesses = [1, 2];
       const carColor = colors[colorIndex];
 
-      return { width, height, borderRadius, carColor };
+      const carVitesse = vitesses[getRandomInt(0, 1)];
+
+      return { width, height, borderRadius, carColor, carVitesse };
     }
 
     // Construire un nœud dans le DOM pour une voiture en utilisant des paramètres aléatoires
@@ -448,6 +456,8 @@ export class Car extends Component {
 
       return false;
     }
+
+    function carDownHasCollision(carNode) {}
 
     // Vérifier si les voitures venant de la droite doivent s'arrêter ou non
     // Ils doivent s'arrêter s'ils voient un feu rouge ou s'il y a une voiture devant eux qui est arrêtée
@@ -536,13 +546,13 @@ export class Car extends Component {
       // Sinon, les voitures se chevaucheraient
       if (
         (movementDirection === mouvementDirections.down &&
-          carsWaiting.top > 5) ||
+          carsWaiting.top > 4) ||
         (movementDirection === mouvementDirections.up &&
-          carsWaiting.down > 5) ||
+          carsWaiting.down > 4) ||
         (movementDirection === mouvementDirections.left &&
-          carsWaiting.right > 5) ||
+          carsWaiting.right > 4) ||
         (movementDirection === mouvementDirections.right &&
-          carsWaiting.left > 5)
+          carsWaiting.left > 4)
       ) {
         return null;
       }
@@ -552,10 +562,6 @@ export class Car extends Component {
       // Définir les métadonnées sur chaque objet voitures globalement requis pour la logique
       //let carNode = buildRandomCarNode();
       let carNode = null;
-      //carNode.metaData.movementDirection = movementDirection;
-      //carNode.metaData.id = carId;
-      //carNode.metaData.isWaiting = true;
-      //carNodes[carId] = carNode;
 
       // Ajuste l'affichage des voitures et incrémente le nombre de voitures en attente
       // Théoriquement, ils attendent dans l'état initial jusqu'à ce qu'ils atteignent le feu tricolore
@@ -707,6 +713,7 @@ export class Car extends Component {
 
         // Si la voiture n'est plus dans la fenêtre, libère les ressources (memory/cpu cleanup)
         if (!isInViewport(carNode)) {
+          nombreCarDelete++;
           carNode.remove();
           delete carNodes[carNode.metaData.id];
           return;
@@ -738,10 +745,10 @@ export class Car extends Component {
     }
 
     // Ajoute une voiture au hasard à la page
-    appendRandomCarToDom(getRandomInt(200, 700));
+    appendRandomCarToDom(3000);
 
     let mainLaneGreen = true;
-    let fogLevel = getRandomInt(0, 600);
+    let fogLevel = 100;
     let flouNiveau = flouterNiv(fogLevel);
 
     // Fonction qui transforme la valeur en une valeur plus conviviale
@@ -793,6 +800,7 @@ export class Car extends Component {
         let crispDuration = deflouterOutput(fuzzyGreenLightDuration);
         nouedSortiCrisp.innerHTML = crispDuration + "secondes";
         noeudSortiFlou.innerHTML = fuzzyGreenLightDuration;
+        CarNotInView.innerHTML = nombreCarDelete;
         mainLaneGreen = !mainLaneGreen;
         feuVertNoeud.innerHTML = mainLaneGreen
           ? "rue verticale"
@@ -805,22 +813,21 @@ export class Car extends Component {
     }
 
     // Démarrer les feux de circulation
-    alternateTrafficLights(500);
-    var seconds = 0;
+    alternateTrafficLights(1000);
 
-    var timer = setInterval(upTimer, 1000);
+    let seconds = 0;
 
-    function upTimer() {
+    setInterval(function upTimer() {
       ++seconds;
 
-      var hour = Math.floor(seconds / 3600);
+      let hour = Math.floor(seconds / 3600);
 
-      var minute = Math.floor((seconds - hour * 3600) / 60);
+      let minute = Math.floor((seconds - hour * 3600) / 60);
 
-      var updSecond = seconds - (hour * 3600 + minute * 60);
+      let updSecond = seconds - (hour * 3600 + minute * 60);
 
       TempsdeSimulation.innerHTML = hour + ":" + minute + ":" + updSecond;
-    }
+    }, 1000);
   }
 
   componentDidUpdate() {
